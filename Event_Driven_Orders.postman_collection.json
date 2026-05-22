@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "8b5c9274-1234-4567-8901-abcdefabcdef",
+		"name": "Event-Driven Orders System",
+		"description": "Comprehensive collection for testing the event-driven order processing platform (Saga Choreography).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Order Operations",
+			"item": [
+				{
+					"name": "Create Successful Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"last_order_id\", jsonData.id);",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customerId\": \"cust-123\",\n    \"lines\": [\n        {\n            \"sku\": \"SKU-A\",\n            \"quantity\": 2,\n            \"unitPrice\": 50.00\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{order_service_url}}/orders",
+							"host": [
+								"{{order_service_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order (Out of Stock)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"last_order_id\", jsonData.id);",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customerId\": \"cust-456\",\n    \"lines\": [\n        {\n            \"sku\": \"SKU-OOS\",\n            \"quantity\": 1,\n            \"unitPrice\": 10.00\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{order_service_url}}/orders",
+							"host": [
+								"{{order_service_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{order_service_url}}/orders/{{last_order_id}}",
+							"host": [
+								"{{order_service_url}}"
+							],
+							"path": [
+								"orders",
+								"{{last_order_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Actuator / Health",
+			"item": [
+				{
+					"name": "Order Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/actuator/health"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inventory Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/actuator/health"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/actuator/health"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notification Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8084/actuator/health"
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "order_service_url",
+			"value": "http://localhost:8081",
+			"type": "string"
+		},
+		{
+			"key": "last_order_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
