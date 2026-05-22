@@ -1,11 +1,7 @@
 package com.mayanky943.orders.order.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -44,13 +40,13 @@ public class Order {
     @Column(name = "failure_reason")
     private String failureReason;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrderLine> lines = new ArrayList<>();
 
     public void addLine(OrderLine line) {
-        line.setOrder(this);
         lines.add(line);
+        line.setOrder(this);
     }
 
     public boolean isTerminal() {
